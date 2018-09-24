@@ -1,5 +1,7 @@
 object mensajeria {
 	var property empleados = []
+	var property paquetesEnviadosDeMensajeria = []
+	var property paquetesSinEnviar = []
 	method contratar(alguien) {
  		empleados.add(alguien)
  	}
@@ -12,10 +14,26 @@ object mensajeria {
 // 		})
 		empleados.clear()
  	}
- 	method esGrandeLaMensajeria() = empleados.count()>=2
+ 	method esGrandeLaMensajeria() = empleados.size()>=2
+ 	
  	method puedeSerEnviadoPorPrimerEmp() = paquete.puedeSerEntregadoPor(empleados.first())
  	
  	method pesoDelUltimoEmp() = empleados.last().peso()
+ 	
+ 	method puedeEntregar(paquete) = empleados.any({emp => paquete.puedeSerEntregadoPor(emp)})
+ 	
+ 	method paqueteFacil(paquete) = empleados.all({emp => paquete.puedeSerEntregadoPor(emp)})
+ 	
+ 	method candidatosParaLlevar(paquete) = empleados.filter({emp=>paquete.puedeSerEntregadoPor(emp)})
+ 	
+ 	method sobrePeso() = empleados.sum({emp=>emp.peso()})>500
+ 	
+ 	method enviarPaquete(paquete){
+ 		if(self.puedeEntregar(paquete)){
+ 			paquetesEnviadosDeMensajeria.add(paquete)
+ 			paquetesSinEnviar.remove(paquete)
+ 		}else{self.error("No hay ningun mensajero disponible para enviar este paquete")}
+ 	}
 }
 //--------------------------
 object roberto{

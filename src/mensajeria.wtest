@@ -1,16 +1,16 @@
 import mensajeros.*
 
-//test "La mensajeria tiene a neo como empleado si lo agregarmos" {
-//	mensajeria.contratar(neo)
-//	assert.that(mensajeria.mensajeros().contains(neo))
-//}
-//
-//test "Si neo es empleado, Hay un mensajero que puede enviar el paquete" {
-//	mensajeria.contratar(neo)
-//	paquete.pagar()
-//	paquete.destino(matrix)
-//	assert.that(mensajeria.mensajeros().contains(neo))
-//}
+test "La mensajeria tiene a neo como empleado si lo agregarmos" {
+	mensajeria.contratar(neo)
+	assert.that(mensajeria.empleados().contains(neo))
+}
+
+test "Si neo es empleado, Hay un mensajero que puede enviar el paquete" {
+	mensajeria.contratar(neo)
+	paquete.estaPagado()
+	paquete.destino(matrix)
+	assert.that(mensajeria.empleados().contains(neo))
+}
 
 test "roberto puede llevar 1 paquete pagado en 1 acoplado"{
 	camion.cantAcoplados(1)
@@ -48,4 +48,44 @@ test "grande mensajeria"{
 	mensajeria.contratar(neo)
 	mensajeria.contratar(chuckNorris)
 	assert.that(mensajeria.esGrandeLaMensajeria())
+}
+test "El paquete puede ser entregado por algun mensajero de la empresa"{
+	mensajeria.contratar(neo)
+	mensajeria.contratar(chuckNorris)
+	camion.cantAcoplados(1) // Para evitar error de cantAcoplados siendo nulo
+	mensajeria.contratar(roberto)
+	paquete.destino(matrix)
+	paquete.estaPagado(true)
+	assert.that(mensajeria.puedeEntregar(paquete))
+}
+test "El paquete puede ser entregado por todos mensajeros de la empresa"{
+	mensajeria.contratar(neo)
+	neo.credito(true)
+	mensajeria.contratar(chuckNorris)
+	camion.cantAcoplados(1) // Para evitar error de cantAcoplados siendo nulo
+	mensajeria.contratar(roberto)
+	paquete.destino(puenteDeBrooklyn)
+	paquete.estaPagado(true)
+	assert.that(mensajeria.paqueteFacil(paquete))
+}
+test "candidatos para llevar 1 paquete"{
+	camion.cantAcoplados(1) // Para evitar error de cantAcoplados siendo nulo
+	var candidatos = [neo, chuckNorris, roberto]
+	mensajeria.contratar(neo)
+	neo.credito(true)
+	mensajeria.contratar(chuckNorris)
+	mensajeria.contratar(roberto)
+	paquete.destino(puenteDeBrooklyn)
+	paquete.estaPagado(true)
+	assert.equals(candidatos, mensajeria.candidatosParaLlevar(paquete))
+}
+test "Sobre peso"{
+	mensajeria.contratar(neo)
+	mensajeria.contratar(chuckNorris)
+	camion.cantAcoplados(1)
+	mensajeria.contratar(roberto)
+	paquete.destino(puenteDeBrooklyn)
+	paquete.estaPagado(true)
+	mensajeria.enviarPaquete(paquete)
+	assert.that(mensajeria.paquetesEnviadosDeMensajeria().contains(paquete))
 }
