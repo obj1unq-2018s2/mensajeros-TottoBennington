@@ -34,6 +34,8 @@ object mensajeria {
  			paquetesSinEnviar.remove(paquete)
  		}else{self.error("No hay ningun mensajero disponible para enviar este paquete")}
  	}
+ 	
+ 	
 }
 //--------------------------
 object roberto{
@@ -71,4 +73,31 @@ object paquete{
 	var property estaPagado
 	var property destino
 	method puedeSerEntregadoPor(mensajero) = destino.dejaPasar(mensajero)
+}
+object paquetito{
+	// paquete gratuito
+	var property destino
+	const property estaPagado = true
+	method puedeSerEntregadoPor(mensajero){} //polimofismo
+}
+object paqueton{
+	var destinos = []
+	var property estaPagado = totalPagadoDelPaquete == destinos.size()*precio
+	var totalPagadoDelPaquete = 0
+	const property precio = 100
+	
+	method agregarDestino(lugar){
+		destinos.add(lugar)
+	}
+	
+	method puedeSerEntregadoPor(mensajero) = destinos.all({
+		dest => dest.dejaPasar(mensajero)
+	})
+	
+	method pagoParcial(monto){
+		totalPagadoDelPaquete += monto
+	}
+	method pagar(){
+		totalPagadoDelPaquete = destinos.size() * precio
+	}
 }
