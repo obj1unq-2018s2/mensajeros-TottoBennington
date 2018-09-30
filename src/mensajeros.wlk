@@ -2,6 +2,8 @@ object mensajeria {
 	var property empleados = []
 	var property paquetesEnviadosDeMensajeria = []
 	var property paquetesSinEnviar = []
+	var property paquetesRecibidos = []
+	
 	method contratar(alguien) {
  		empleados.add(alguien)
  	}
@@ -20,7 +22,9 @@ object mensajeria {
  	
  	method pesoDelUltimoEmp() = empleados.last().peso()
  	
- 	method puedeEntregar(paquete) = empleados.any({emp => paquete.puedeSerEntregadoPor(emp)})
+ 	method puedeEntregar(paquete) = empleados.filter({
+ 		emp => paquete.puedeSerEntregadoPor(emp)
+ 	}) != []
  	
  	method paqueteFacil(paquete) = empleados.all({emp => paquete.puedeSerEntregadoPor(emp)})
  	
@@ -35,7 +39,26 @@ object mensajeria {
  		}else{self.error("No hay ningun mensajero disponible para enviar este paquete")}
  	}
  	
+ 	method recibirNuevoPaquete(paquete){
+ 		paquetesRecibidos.add(paquete)
+ 		paquetesSinEnviar.add(paquete)
+ 	}
  	
+ 	method enviarTodosLosPaquetes(){
+ 		paquetesSinEnviar.forEach({
+ 			pack => self.enviarPaquete(pack) // solo si es posible entregarlo lo enviamos
+ 		})
+ 	}
+ 	
+ 	method paqueteMasCaro() = paquetesSinEnviar.max({pack => pack.precio()})
+ 	
+ 	method listadoDePaquetesEnviadosPorMensajeria() = paquetesEnviadosDeMensajeria
+ 	
+ 	method eficaciaMensajeria() = ((paquetesEnviadosDeMensajeria.size() / paquetesRecibidos.size()) * 100).roundUp()
+ 	// por ejemplo: pudiste enviar 10 de 20 que tenias = 0.5, multiplicado por 100 = 50% de eficacia.
+ 	// roundUp() para redondear y que el numero resultante sea entero.
+ 
+	 	
 }
 //--------------------------
 object roberto{
@@ -72,19 +95,21 @@ object matrix{
 object paquete{
 	var property estaPagado
 	var property destino
+	var property precio
 	method puedeSerEntregadoPor(mensajero) = destino.dejaPasar(mensajero)
 }
 object paquetito{
 	// paquete gratuito
+	const property precio = 0
 	var property destino
 	const property estaPagado = true
 	method puedeSerEntregadoPor(mensajero){} //polimofismo
 }
 object paqueton{
-	var destinos = []
-	var property estaPagado = totalPagadoDelPaquete == destinos.size()*precio
-	var totalPagadoDelPaquete = 0
 	const property precio = 100
+	var destinos = []
+	var totalPagadoDelPaquete = 0
+	var property estaPagado = totalPagadoDelPaquete == destinos.size()*precio
 	
 	method agregarDestino(lugar){
 		destinos.add(lugar)

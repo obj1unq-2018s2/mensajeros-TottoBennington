@@ -1,0 +1,46 @@
+import mensajeros.*
+
+describe "Cuarta Parte" {
+
+	fixture {
+		mensajeria.recibirNuevoPaquete(paquete)
+		mensajeria.recibirNuevoPaquete(paquetito)
+		mensajeria.recibirNuevoPaquete(paqueton)
+		paqueton.agregarDestino(puenteDeBrooklyn)//necesario 
+		paqueton.agregarDestino(matrix)//necesario 
+		camion.cantAcoplados(1) // necesario para el peso del camion
+		mensajeria.contratar(roberto)
+		mensajeria.contratar(chuckNorris)
+		mensajeria.contratar(neo)
+		paquete.destino(puenteDeBrooklyn)
+		paquetito.destino(matrix)
+		paqueton.pagoParcial(5000)
+		paquete.estaPagado(true)
+		roberto.peso(90)
+			
+	}
+	test "Mensajeria tiene: paquete, paquetito & paqueton" {
+		assert.equals([paquete, paquetito, paqueton], mensajeria.paquetesRecibidos())
+	}
+	
+	test "Enviamos todos los paquetes que es posible enviar"{
+		mensajeria.enviarTodosLosPaquetes()
+		assert.that(mensajeria.paquetesSinEnviar().isEmpty())
+	}
+	
+	test "El mas caro de los paquetes"{
+		paquete.precio(1000)
+		assert.equals(mensajeria.paqueteMasCaro(),paquete)
+	}
+	
+	test "Paquetes Enviados"{
+		mensajeria.enviarTodosLosPaquetes()
+		assert.equals(mensajeria.paquetesEnviadosDeMensajeria(),[paquete, paquetito, paqueton])
+	}
+	
+	test "Test de Eficacia"{
+		mensajeria.enviarPaquete(paquetito)
+		assert.equals(mensajeria.eficaciaMensajeria(), 34)
+	}
+	
+}
