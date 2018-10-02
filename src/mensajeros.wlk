@@ -22,9 +22,7 @@ object mensajeria {
  	
  	method pesoDelUltimoEmp() = empleados.last().peso()
  	
- 	method puedeEntregar(paquete) = empleados.filter({
- 		emp => paquete.puedeSerEntregadoPor(emp)
- 	}) != []
+ 	method puedeEntregar(paquete) = empleados.any {emp => paquete.puedeSerEntregadoPor(emp)}
  	
  	method paqueteFacil(paquete) = empleados.all({emp => paquete.puedeSerEntregadoPor(emp)})
  	
@@ -36,7 +34,9 @@ object mensajeria {
  		if(self.puedeEntregar(paquete)){
  			paquetesEnviadosDeMensajeria.add(paquete)
  			paquetesSinEnviar.remove(paquete)
- 		}else{self.error("No hay ningun mensajero disponible para enviar este paquete")}
+ 		}else{
+ 			self.error("No hay ningun mensajero disponible para enviar este paquete")
+ 		}
  	}
  	
  	method recibirNuevoPaquete(paquete){
@@ -45,9 +45,9 @@ object mensajeria {
  	}
  	
  	method enviarTodosLosPaquetes(){
- 		paquetesSinEnviar.forEach({
- 			pack => self.enviarPaquete(pack) // solo si es posible entregarlo lo enviamos
- 		})
+ 		console.println(paquetesSinEnviar)
+ 		paquetesSinEnviar.forEach { pack => self.enviarPaquete(pack) }
+ 		 // solo si es posible entregarlo lo enviamos
  	}
  	
  	method paqueteMasCaro() = paquetesSinEnviar.max({pack => pack.precio()})

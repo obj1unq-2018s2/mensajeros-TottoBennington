@@ -27,10 +27,10 @@ test "neo no puede llevar paquete sin pagar a matrix"{
 	assert.that(!paquete.puedeSerEntregadoPor(neo))
 }
 
-test "contratar"{
-	mensajeria.contratar(neo)
-	assert.that(mensajeria.empleados().any({m=>m == neo}))
-}
+//test "contratar"{
+//	mensajeria.contratar(neo)
+//	assert.that(mensajeria.empleados().any({m=>m == neo}))
+//}
 
 test "despedir"{
 	mensajeria.contratar(neo)
